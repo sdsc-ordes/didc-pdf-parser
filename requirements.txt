@@ -1,0 +1,5 @@
+#olmocr
+#transformers
+pydantic
+pydantic-ai
+jambo
