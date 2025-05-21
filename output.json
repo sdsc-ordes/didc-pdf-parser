@@ -1,0 +1,171 @@
+{
+    "title": "USZ Laborresultat",
+    "report": "Klinik für Medizinische Onkologie und Hämatologie, Diagnostik (HAD)",
+    "project": "H0739",
+    "patient_id": "DIDC-001P",
+    "samples": {
+        "sample_id": "1036",
+        "date": "2024-11-28",
+        "time": "14:50"
+    },
+    "sections": [
+        {
+            "section_name": "Hämatologische Untersuchungen Blutstatus",
+            "data": [
+                {
+                    "substance": "Hämoglobin",
+                    "result": "155",
+                    "unit": "g/l",
+                    "reference": "134-170"
+                },
+                {
+                    "substance": "Hämatokrit",
+                    "result": "0.441",
+                    "unit": "l/l",
+                    "reference": "0.400-0.500"
+                },
+                {
+                    "substance": "MCV",
+                    "result": "86.1",
+                    "unit": "fl",
+                    "reference": "80-100"
+                },
+                {
+                    "substance": "MCH",
+                    "result": "30.3",
+                    "unit": "pg",
+                    "reference": "26-34"
+                },
+                {
+                    "substance": "MCHC",
+                    "result": "351",
+                    "unit": "g/l",
+                    "reference": "310-360"
+                },
+                {
+                    "substance": "RDW",
+                    "result": "11.9",
+                    "unit": "%",
+                    "reference": "11.0-14.8"
+                },
+                {
+                    "substance": "Thrombozyten",
+                    "result": "181",
+                    "unit": "G/l",
+                    "reference": "143-400"
+                },
+                {
+                    "substance": "Leukozyten",
+                    "result": "4.13",
+                    "unit": "G/l",
+                    "reference": "3.0-9.6"
+                }
+            ]
+        },
+        {
+            "section_name": "Blutbild automatisch absolut",
+            "data": [
+                {
+                    "substance": "Neutrophile",
+                    "result": "2.14",
+                    "unit": "G/l",
+                    "reference": "1.40-8.00"
+                },
+                {
+                    "substance": "Monozyten",
+                    "result": "0.35",
+                    "unit": "G/l",
+                    "reference": "0.16-0.95"
+                },
+                {
+                    "substance": "Eosinophile",
+                    "result": "0.07",
+                    "unit": "G/l",
+                    "reference": "0.00-0.70"
+                },
+                {
+                    "substance": "Basophile",
+                    "result": "0.03",
+                    "unit": "G/l",
+                    "reference": "0.00-0.15"
+                },
+                {
+                    "substance": "Lymphozyten",
+                    "result": "1.53",
+                    "unit": "G/l",
+                    "reference": "1.50-4.00"
+                },
+                {
+                    "substance": "Immature Granulocytes",
+                    "result": "0.01",
+                    "unit": "G/l",
+                    "reference": "0.00-0.03"
+                },
+                {
+                    "substance": "NRBC abs.",
+                    "result": "0.00",
+                    "unit": "G/l",
+                    "reference": "<UNKNOWN>"
+                }
+            ]
+        },
+        {
+            "section_name": "Blutbild automatisch relativ",
+            "data": [
+                {
+                    "substance": "Neutrophile",
+                    "result": "51.9",
+                    "unit": "%",
+                    "reference": "40.0-74.0"
+                },
+                {
+                    "substance": "Monozyten",
+                    "result": "8.5",
+                    "unit": "%",
+                    "reference": "3.4-9.0"
+                },
+                {
+                    "substance": "Eosinophile",
+                    "result": "1.7",
+                    "unit": "%",
+                    "reference": "0.0-7.0"
+                },
+                {
+                    "substance": "Basophile",
+                    "result": "0.7",
+                    "unit": "%",
+                    "reference": "0.0-1.5"
+                },
+                {
+                    "substance": "Lymphozyten",
+                    "result": "37.0",
+                    "unit": "%",
+                    "reference": "19.0-48.0"
+                },
+                {
+                    "substance": "Immature Granulocytes",
+                    "result": "0.2",
+                    "unit": "%",
+                    "reference": "0.0-0.5"
+                },
+                {
+                    "substance": "NRBC",
+                    "result": "0.0",
+                    "unit": "/100 Lc",
+                    "reference": "<UNKNOWN>"
+                }
+            ]
+        },
+        {
+            "section_name": "Hämostase Untersuchungen",
+            "data": [
+                {
+                    "substance": "Fibrinogen (fkt.)",
+                    "result": "2.1",
+                    "unit": "g/l",
+                    "reference": "1.5-4.0"
+                }
+            ]
+        }
+    ]
+}

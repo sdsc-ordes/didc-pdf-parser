@@ -1,4 +1,5 @@
 {
+  "title": "Sample Report Schema",
     "report": "string",              
     "project": "string",             
     "patient_id": "string",          

@@ -17,14 +17,16 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 # Grab a sample PDF
-urllib.request.urlretrieve("https://molmo.allenai.org/paper.pdf", "./paper.pdf")
+urllib.request.urlretrieve("https://arxiv.org/pdf/2502.18443", "./paper.pdf")
 
 # Render page 1 to an image
 image_base64 = render_pdf_to_base64png("./paper.pdf", 1, target_longest_image_dim=1024)
+print("image_base64")
 
 # Build the prompt, using document metadata
 anchor_text = get_anchor_text("./paper.pdf", 1, pdf_engine="pdfreport", target_length=4000)
 prompt = build_finetuning_prompt(anchor_text)
+print(prompt)
 
 # Build the full prompt
 messages = [

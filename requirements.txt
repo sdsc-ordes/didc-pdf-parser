@@ -1,5 +1,8 @@
-#olmocr
-#transformers
+olmocr
+transformers
 pydantic
 pydantic-ai
 jambo
+
+# llama-cpp-python
+docling
