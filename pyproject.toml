@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "didc-pdf-parser"
+version = "0.1.0"
+description = "Parse PDF documents and extract structured data"
+dependencies = [
+    "typer",
+    "rich",
+    "pydantic-ai",
+    # add other dependencies
+]
+
+[project.scripts]
+didc-pdf-parser = "src.main:app"
