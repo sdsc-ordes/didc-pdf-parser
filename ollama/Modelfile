@@ -1,0 +1,17 @@
+FROM qwen3:14b
+
+# Context and output length
+PARAMETER num_ctx 32768
+PARAMETER num_predict -2
+
+# Sampling and penalties 
+PARAMETER temperature 0.5
+PARAMETER top_p 1.0
+PARAMETER top_k 0
+PARAMETER frequency_penalty 0.0
+PARAMETER presence_penalty 0.0
+PARAMETER repeat_penalty 1.0
+PARAMETER min_p 0.0
+
+# Optional: stick to deterministic output by locking the seed
+PARAMETER seed 0
