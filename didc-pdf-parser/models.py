@@ -52,6 +52,10 @@ class Kidney(BaseModel):
     egfr_crea_ckd_epi_2009: Analyte = Field(..., description="eGFR (CKD-EPI 2009)")
     uric_acid: Analyte = Field(..., description="Uric Acid")
 
+class AminoAcidBilirubinAndHemeMetabolism(BaseModel):
+    caption: str = "Aminosäure-,Bili.-und Hämstoffwechsel"
+    bilirubin_total: Analyte = Field(..., description="Bilirubin, total")
+
 class Proteins(BaseModel):
     caption: str = "Proteine"
     protein: Analyte = Field(..., description="Protein")
