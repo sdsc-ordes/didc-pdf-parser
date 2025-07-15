@@ -10,7 +10,7 @@ dependencies = [
     "typer",
     "rich",
     "pydantic-ai",
-    # add other dependencies
+    "docling",   
 ]
 
 [project.scripts]

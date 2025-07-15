@@ -1,11 +1,4 @@
-#olmocr
-#transformers
-#pydantic
-#pydantic-ai
-#jambo
-
-# llama-cpp-python
-docling
-pydantic-ai
-typer[all]
-rich
+docling==2.41.0
+pydantic-ai==0.4.2
+typer[all]==0.16.0
+rich==14.0.0

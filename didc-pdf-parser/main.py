@@ -1,11 +1,12 @@
 import logging
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import typer
 from rich.console import Console
 from rich.logging import RichHandler
+from rich.progress import Progress, TaskID
 
 from parser import parse_document
 from llm import extract_structured
@@ -29,30 +30,104 @@ app = typer.Typer(
     add_completion=False
 )
 
+def detect_analysis_type(filename: str) -> str:
+    """Detect analysis type from filename."""
+    filename_upper = filename.upper()
+    if "IKC_" in filename_upper:
+        return "IKC"
+    elif "AKH_" in filename_upper:
+        return "AKH"
+    else:
+        logger.warning(f"No analysis type detected in filename '{filename}', defaulting to IKC")
+        return "IKC"
+
+def find_pdf_files(path: Path) -> List[Path]:
+    """Find all PDF files in a directory or return single file."""
+    if path.is_file():
+        if path.suffix.lower() == '.pdf':
+            return [path]
+        else:
+            logger.error(f"❌ File '{path}' is not a PDF")
+            raise typer.Exit(1)
+    elif path.is_dir():
+        pdf_files = list(path.glob("*.pdf"))
+        if not pdf_files:
+            logger.error(f"❌ No PDF files found in directory '{path}'")
+            raise typer.Exit(1)
+        return sorted(pdf_files)
+    else:
+        logger.error(f"❌ Path '{path}' does not exist")
+        raise typer.Exit(1)
+
+def process_single_pdf(
+    pdf_path: Path,
+    analysis_type: str,
+    output_dir: Path,
+    save_txt: bool,
+    final_model_name: str,
+    final_base_url: str,
+    final_api_key: Optional[str]
+) -> bool:
+    """Process a single PDF file. Returns True if successful, False otherwise."""
+    try:
+        # Get base filename without extension
+        base_name = pdf_path.stem
+        
+        # Define output paths
+        txt_path = output_dir / f"{base_name}.txt"
+        json_path = output_dir / f"{base_name}.json"
+        
+        logger.info(f"📄 Processing: [bold]{pdf_path.name}[/bold] (Analysis: {analysis_type})", extra={"markup": True})
+        
+        # Step 1: Parse PDF to raw text
+        logger.debug("Extracting text from PDF...")
+        raw_text = parse_document(str(pdf_path))
+        logger.debug(f"Text extraction completed ({len(raw_text)} characters)")
+        
+        # Step 2: Save raw text if requested
+        if save_txt:
+            logger.debug(f"Saving raw text to: {txt_path.name}")
+            txt_path.write_text(raw_text, encoding='utf-8')
+            logger.debug("Raw text saved successfully")
+        
+        # Step 3: Extract structured data
+        logger.debug("Extracting structured data with LLM...")
+        structured = extract_structured(raw_text, final_model_name, final_base_url, analysis_type, final_api_key)
+        logger.debug("Structured data extraction completed")
+        
+        # Step 4: Save JSON output
+        logger.debug(f"Saving structured data to: {json_path.name}")
+        json_path.write_text(structured.model_dump_json(indent=2), encoding='utf-8')
+        logger.info(f"✅ [bold green]{pdf_path.name}[/bold green] processed successfully", extra={"markup": True})
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to process [bold red]{pdf_path.name}[/bold red]: {e}", extra={"markup": True})
+        return False
+
 @app.command()
 def parse(
-    pdf_path: Path = typer.Argument(
+    input_path: Path = typer.Argument(
         ..., 
-        help="Path to the PDF file to parse",
+        help="Path to PDF file or directory containing PDF files",
         exists=True,
-        file_okay=True,
-        dir_okay=False,
         readable=True
     ),
-    analysis_type: str = typer.Option(
-        "IKC",
+    analysis_type: Optional[str] = typer.Option(
+        None,
         "--analysis-type", "-a",
-        help="IKC or AKH analysis type. Defaults to 'IKC'.",
+        help="Force analysis type (IKC or AKH). If not provided, will be auto-detected from filename.",
     ),
     output_dir: Optional[Path] = typer.Option(
         None,
         "--output-dir", "-o",
-        help="Output directory for generated files. Defaults to PDF file's directory."
+        help="Output directory for generated files. Defaults to input file/directory."
     ),
     save_txt: bool = typer.Option(
         False,
         "--save-txt", "-t",
-        help="Save intermediate raw text file"
+        help="Save intermediate raw text files"
     ),
     verbose: bool = typer.Option(
         False,
@@ -76,9 +151,10 @@ def parse(
     )
 ):
     """
-    Parse a PDF document and extract structured data.
+    Parse PDF document(s) and extract structured data.
     
-    The output JSON file will have the same name as the input PDF file.
+    Can process a single PDF file or all PDF files in a directory.
+    Analysis type (IKC/AKH) is auto-detected from filename tags or can be forced with --analysis-type.
     """
     # Set logging level based on verbose flag
     if verbose:
@@ -103,60 +179,66 @@ def parse(
     logger.debug(f"Using base URL: {final_base_url}")
     logger.debug(f"API key {'provided' if final_api_key else 'not provided'}")
     
+    # Find PDF files to process
+    pdf_files = find_pdf_files(input_path)
+    logger.info(f"Found {len(pdf_files)} PDF file(s) to process")
+    
     # Determine output directory
     if output_dir is None:
-        output_dir = pdf_path.parent
-        logger.debug(f"Using PDF directory as output: {output_dir}")
+        if input_path.is_file():
+            output_dir = input_path.parent
+        else:
+            output_dir = input_path
+        logger.debug(f"Using default output directory: {output_dir}")
     else:
         output_dir.mkdir(parents=True, exist_ok=True)
         logger.debug(f"Using specified output directory: {output_dir}")
     
-    # Get base filename without extension
-    base_name = pdf_path.stem
+    # Process files
+    successful = 0
+    failed = 0
     
-    # Define output paths
-    txt_path = output_dir / f"{base_name}.txt"
-    json_path = output_dir / f"{base_name}.json"
-    
-    logger.info(f"Starting PDF parsing: [bold]{pdf_path.name}[/bold]", extra={"markup": True})
-    
-    try:
-        # Step 1: Parse PDF to raw text
-        logger.info("📄 Extracting text from PDF...")
-        raw_text = parse_document(str(pdf_path))
-        logger.info(f"✅ Text extraction completed ({len(raw_text)} characters)")
+    if len(pdf_files) == 1:
+        # Single file processing
+        pdf_path = pdf_files[0]
+        detected_analysis_type = analysis_type or detect_analysis_type(pdf_path.name)
         
-        # Step 2: Save raw text if requested
-        if save_txt:
-            logger.info(f"💾 Saving raw text to: [bold]{txt_path.name}[/bold]", extra={"markup": True})
-            txt_path.write_text(raw_text, encoding='utf-8')
-            logger.info("✅ Raw text saved successfully")
+        logger.info(f"Starting PDF parsing: [bold]{pdf_path.name}[/bold]", extra={"markup": True})
         
-        # Step 3: Extract structured data
-        logger.info("🧠 Extracting structured data with LLM...")
-        structured = extract_structured(raw_text, final_model_name, final_base_url, analysis_type, final_api_key)
-        logger.info("✅ Structured data extraction completed")
-        
-        # Step 4: Save JSON output
-        logger.info(f"💾 Saving structured data to: [bold]{json_path.name}[/bold]", extra={"markup": True})
-        json_path.write_text(structured.model_dump_json(indent=2), encoding='utf-8')
-        logger.info("✅ Structured data saved successfully")
-        
-        # Summary
-        console.print("\n[bold green]✨ Processing completed successfully![/bold green]")
-        console.print(f"📁 Output directory: {output_dir}")
-        console.print(f"📄 JSON output: {json_path.name}")
-        if save_txt:
-            console.print(f"📝 Text output: {txt_path.name}")
+        if process_single_pdf(
+            pdf_path, detected_analysis_type, output_dir, save_txt,
+            final_model_name, final_base_url, final_api_key
+        ):
+            successful += 1
+        else:
+            failed += 1
+    else:
+        # Multiple files processing with progress bar
+        with Progress(console=console) as progress:
+            task = progress.add_task("[green]Processing PDFs...", total=len(pdf_files))
             
-    except FileNotFoundError as e:
-        logger.error(f"❌ File not found: {e}")
-        raise typer.Exit(1)
-    except Exception as e:
-        logger.error(f"❌ Processing failed: {e}")
-        if verbose:
-            logger.exception("Full error details:")
-        raise typer.Exit(1)
+            for pdf_path in pdf_files:
+                detected_analysis_type = analysis_type or detect_analysis_type(pdf_path.name)
+                
+                if process_single_pdf(
+                    pdf_path, detected_analysis_type, output_dir, save_txt,
+                    final_model_name, final_base_url, final_api_key
+                ):
+                    successful += 1
+                else:
+                    failed += 1
+                
+                progress.update(task, advance=1)
+    
+    # Summary
+    console.print(f"\n[bold green]✨ Processing completed![/bold green]")
+    console.print(f"📊 Results: {successful} successful, {failed} failed")
+    console.print(f"📁 Output directory: {output_dir}")
+    
+    if failed > 0:
+        console.print(f"[yellow]⚠️  {failed} file(s) failed to process[/yellow]")
+        if not verbose:
+            console.print("[dim]Use --verbose flag for detailed error information[/dim]")
 
 if __name__ == "__main__":
     app()
