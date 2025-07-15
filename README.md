@@ -1,5 +1,8 @@
 # didc-pdf-parser
 
+> [!WARNING]
+> ⚠️ This component is under development and may be unstable. Feel free to open an issue if you find any error. 
+
 PDF-parser for blood samples used for the SwissHeart project.
 
 This project uses Pydantic AI and LLM models to extract structured data from medical laboratory reports in PDF format. It supports two main report types: IKC and AKH blood analysis reports.
@@ -180,9 +183,13 @@ The data model can be found in `didc-pdf-parser/models.py`.
   - Blood Count (Absolute/Relative)
 - Hemostasis Examinations
   - Coagulation Factors
+ 
+## Contributing
+
+SOON. 
 
 ## Acknowledgements and Funding
-The development of the DIDC PDF Parser is being funded by.... TODO: Complete details. 
+The development of the DIDC PDF Parser is being funded by the Personalized Health and Related Technologies (PHRT), the Eidgenössische Technische Hochschule Zürich (ETH Zürich), and the Swiss Data Science Center (SDSC). 
 
 
 ## Copyright
