@@ -45,21 +45,21 @@ Please see the section below to pull or create Ollama models. We tested the tool
 
 ```bash
 # IKC report with local Ollama
-python main.py /path/to/report.pdf -a IKC -m "qwen3-14b-32k" -u "http://localhost:11434/v1" --save-txt --verbose
+python didc-pdf-parser/main.py /path/to/report.pdf -a IKC -m "qwen3-14b-32k" -u "http://localhost:11434/v1" --save-txt --verbose
 
 # AKH report with local Ollama
-python main.py /path/to/report.pdf -a AKH -m "qwen3-14b-32k" -u "http://localhost:11434/v1" --save-txt --verbose
+python didc-pdf-parser/main.py /path/to/report.pdf -a AKH -m "qwen3-14b-32k" -u "http://localhost:11434/v1" --save-txt --verbose
 ```
 
 #### Cloud API Usage
 
 ```bash
 # Using OpenRouter API
-python main.py /path/to/report.pdf -a IKC -m "qwen/qwen3-14b" -u "https://openrouter.ai/api/v1" -k "your-api-key" --save-txt --verbose
+python didc-pdf-parser/main.py /path/to/report.pdf -a IKC -m "qwen/qwen3-14b" -u "https://openrouter.ai/api/v1" -k "your-api-key" --save-txt --verbose
 
 # Using environment variables for API key
 export API_KEY="your-api-key"
-python main.py /path/to/report.pdf -a AKH -m "qwen/qwen3-14b" -u "https://openrouter.ai/api/v1" --save-txt --verbose
+python didc-pdf-parser/main.py /path/to/report.pdf -a AKH -m "qwen/qwen3-14b" -u "https://openrouter.ai/api/v1" --save-txt --verbose
 ```
 
 #### Batch Usage

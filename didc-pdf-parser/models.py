@@ -128,6 +128,7 @@ class SexualHormones(BaseModel):
 class IKCLabResult(BaseModel):
     electrolyte_and_water_balance: ElectrolyteAndWaterBalance = Field(..., description="Elektrolyt- und Wasserhaushalt")
     kidney: Kidney = Field(..., description="Niere")
+    amino_acid_bilirubin_and_heme_metabolism: AminoAcidBilirubinAndHemeMetabolism = Field(..., description="Aminosäure-,Bili.-und Hämstoffwechsel")
     proteins: Proteins = Field(..., description="Proteine")
     enzymes: Enzymes = Field(..., description="Enzyme")
     inflammation: Inflammation = Field(..., description="Entzündung")
