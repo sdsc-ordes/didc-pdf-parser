@@ -52,6 +52,10 @@ class Kidney(BaseModel):
     egfr_crea_ckd_epi_2009: Analyte = Field(..., description="eGFR (CKD-EPI 2009)")
     uric_acid: Analyte = Field(..., description="Uric Acid")
 
+class AminoAcidBilirubinAndHemeMetabolism(BaseModel):
+    caption: str = "Aminosäure-,Bili.-und Hämstoffwechsel"
+    bilirubin_total: Analyte = Field(..., description="Bilirubin, total")
+
 class Proteins(BaseModel):
     caption: str = "Proteine"
     protein: Analyte = Field(..., description="Protein")
@@ -124,6 +128,7 @@ class SexualHormones(BaseModel):
 class IKCLabResult(BaseModel):
     electrolyte_and_water_balance: ElectrolyteAndWaterBalance = Field(..., description="Elektrolyt- und Wasserhaushalt")
     kidney: Kidney = Field(..., description="Niere")
+    amino_acid_bilirubin_and_heme_metabolism: AminoAcidBilirubinAndHemeMetabolism = Field(..., description="Aminosäure-,Bili.-und Hämstoffwechsel")
     proteins: Proteins = Field(..., description="Proteine")
     enzymes: Enzymes = Field(..., description="Enzyme")
     inflammation: Inflammation = Field(..., description="Entzündung")
